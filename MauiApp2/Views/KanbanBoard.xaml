@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiApp2.Views.KanbanBoard">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25">
+            <!--<Image
+                Source="dotnet_bot.png"
+                HeightRequest="185"
+                Aspect="AspectFit"
+                SemanticProperties.Description="dot net bot in a race car number eight" />-->
+
+            <Label
+                Text="Personal Kanban Board"
+                Style="{StaticResource Headline}"
+                SemanticProperties.HeadingLevel="Level1" />
+
+            <Label
+                Text="Track your tasks"
+                Style="{StaticResource SubHeadline}"
+                SemanticProperties.HeadingLevel="Level2"
+                SemanticProperties.Description="Welcome to dot net Multi platform App UI" />
+
+            <Label Text="Choose your working directory" HorizontalTextAlignment="Center"/>
+            <HorizontalStackLayout HorizontalOptions="Center" Padding="10">
+                <Entry x:Name="FilePickerEntry" Placeholder="C:/" MinimumWidthRequest="500"></Entry>
+                <Button Text="Load" Clicked="PickFile" BackgroundColor="Plum" Margin="10,0,0,0"></Button>
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Label Text="QUICK SORT:"
+                       BackgroundColor="Transparent"
+                       TextColor="DimGray"
+                       FontSize="Caption"
+                       VerticalTextAlignment="Center"
+                      />
+                <Button Text="By Priority" TextColor="Plum"  BackgroundColor="Transparent" Clicked="OnPrioritySort" VerticalOptions="Start"></Button>
+                <Button Text="By Completion" TextColor="Plum" BackgroundColor="Transparent" Clicked="OnCompletionSort" VerticalOptions="Start"></Button>
+            </HorizontalStackLayout>
+            
+
+            <HorizontalStackLayout Margin="10" VerticalOptions="Center" HorizontalOptions="Center">
+
+                <VerticalStackLayout Margin="10">
+                    <Border Stroke="AntiqueWhite" StrokeThickness="4" StrokeShape="RoundRectangle 15,15,0,0">
+                        <VerticalStackLayout BindingContext="{Binding Source={x:Reference BACKLOG}}">
+                            <Label
+                    Text="BACKLOG"
+                    Style="{StaticResource Headline}"
+                    SemanticProperties.HeadingLevel="Level2" />
+                            <ListView x:Name="BACKLOG" Margin="5" WidthRequest="300">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <ViewCell>
+                                            <VerticalStackLayout Margin="5">
+                                                <Label x:Name="CurrentCell" Text="{Binding Name}" FontAttributes="Bold" TextColor="Plum"></Label>
+                                                <Label Text="{Binding Description}" LineBreakMode="WordWrap" FontAttributes="Italic"></Label>
+                                                <Grid  ColumnSpacing="50">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="125" />
+                                                        <ColumnDefinition Width="100" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Label Grid.Column="0" HorizontalOptions="Start" Text="{Binding Task_Type}"></Label>
+                                                    <Label Grid.Column="1" HorizontalOptions="End" Text="{Binding Priority}"></Label>
+                                                </Grid>
+                                                <Label x:Name="CompletionLabel" Text="{Binding Source={x:Reference CompletionSlider},Path=Value, StringFormat='{0:P}'}"></Label>
+                                                <Slider  x:Name="CompletionSlider" Minimum="0" Maximum="1" Value="{Binding Completion}" ValueChanged="OnSliderValueChanged" DragCompleted="OnSliderDragCompleted"/>
+
+                                                <Grid  ColumnSpacing="25">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="30" />
+                                                        <ColumnDefinition Width="30" />
+                                                        <ColumnDefinition Width="180" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Button
+                                                        Grid.Column="0"
+                                                        Text="&lt;" 
+                                                        TextColor="DimGrey"
+                                                        FontSize="Small"
+                                                        SemanticProperties.Hint="Switch To Left"
+                                                        BackgroundColor="Transparent"
+                                                        Clicked="OnBackClicked"
+                                                        HorizontalOptions="Start" />
+                                                    <Button
+                                                        Grid.Column="1"
+                                                        Text="&gt;"
+                                                        TextColor="DimGrey"
+                                                        FontSize="Small"
+                                                        SemanticProperties.Hint="Switch To Left"
+                                                        BackgroundColor="Transparent"
+                                                        Clicked="OnNextClicked"
+                                                        HorizontalOptions="Start" />
+                                                    <Button
+                                                        Grid.Column="2"
+                                                        HorizontalOptions="End"
+                                                        Text="X"
+                                                        Clicked="OnDelete"
+                                                        VerticalOptions="Center"
+                                                        TextColor="DimGrey"
+                                                        BackgroundColor="Transparent"
+                                                        />
+                                                </Grid>
+                                                <VerticalStackLayout.GestureRecognizers>
+                                                    <TapGestureRecognizer NumberOfTapsRequired="2" Tapped="OnDoubleTapped"/>
+                                                    <DropGestureRecognizer AllowDrop="True" Drop="OnCellAdded" />
+                                                    <DragGestureRecognizer CanDrag="True"  DragStarting="OnCellRemoved" />
+                                                </VerticalStackLayout.GestureRecognizers>
+                                            </VerticalStackLayout>
+                                        </ViewCell>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+
+                            </ListView>
+                            <VerticalStackLayout.GestureRecognizers>
+                                <DropGestureRecognizer AllowDrop="True" Drop="OnCellAddedVSL" />
+                            </VerticalStackLayout.GestureRecognizers>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Stroke="DimGray" StrokeThickness="4" StrokeShape="RoundRectangle 0,0,15,15">
+                        <Button
+                            Text="+" 
+                            TextColor="DimGrey"
+                            FontSize="Large"
+                            CommandParameter="BACKLOG"
+                            SemanticProperties.Hint="Add New Task"
+                            BackgroundColor="Transparent"
+                            Clicked="OnCreateNewTask"
+                            HorizontalOptions="Fill" />
+                    </Border>
+
+                </VerticalStackLayout>
+                <VerticalStackLayout Margin="10">
+                    <Border Stroke="AntiqueWhite" StrokeThickness="4" StrokeShape="RoundRectangle 15,15,0,0">
+                        <VerticalStackLayout BindingContext="{Binding Source={x:Reference TODAY_FOCUS}}">
+                            <Label
+                        Text="TODAY'S FOCUS"
+                        Style="{StaticResource Headline}"
+                        SemanticProperties.HeadingLevel="Level2" />
+                            <ListView x:Name="TODAY_FOCUS" Margin="5" WidthRequest="300" >
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <ViewCell >
+                                            <VerticalStackLayout Margin="5">
+                                                <Label x:Name="CurrentCell" Text="{Binding Name}" FontAttributes="Bold" TextColor="Plum"></Label>
+                                                <Label Text="{Binding Description}" LineBreakMode="WordWrap" FontAttributes="Italic"></Label>
+                                                <Grid  ColumnSpacing="50">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="125" />
+                                                        <ColumnDefinition Width="100" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Label Grid.Column="0" HorizontalOptions="Start" Text="{Binding Task_Type}"></Label>
+                                                    <Label Grid.Column="1" HorizontalOptions="End" Text="{Binding Priority}"></Label>
+                                                </Grid>
+                                                <Label x:Name="CompletionLabel" Text="{Binding Source={x:Reference CompletionSlider},Path=Value, StringFormat='{0:P}'}"></Label>
+                                                <Slider  x:Name="CompletionSlider" Minimum="0" Maximum="1" Value="{Binding Completion}" ValueChanged="OnSliderValueChanged" DragCompleted="OnSliderDragCompleted"/>
+                                                <Grid  ColumnSpacing="25">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="30" />
+                                                        <ColumnDefinition Width="30" />
+                                                        <ColumnDefinition Width="180" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Button
+                                                        Grid.Column="0"
+                                                        Text="&lt;" 
+                                                        TextColor="DimGrey"
+                                                        FontSize="Small"
+                                                        SemanticProperties.Hint="Switch To Left"
+                                                        BackgroundColor="Transparent"
+                                                        Clicked="OnBackClicked"
+                                                        HorizontalOptions="Start" />
+                                                    <Button
+                                                        Grid.Column="1"
+                                                        Text="&gt;"
+                                                        TextColor="DimGrey"
+                                                        FontSize="Small"
+                                                        SemanticProperties.Hint="Switch To Left"
+                                                        BackgroundColor="Transparent"
+                                                        Clicked="OnNextClicked"
+                                                        HorizontalOptions="Start" />
+                                                    <Button
+                                                        Grid.Column="2"
+                                                        HorizontalOptions="End"
+                                                        Text="X"
+                                                        Clicked="OnDelete"
+                                                        VerticalOptions="Center"
+                                                        TextColor="DimGrey"
+                                                        BackgroundColor="Transparent"
+                                                        />
+                                                </Grid>
+                                                <VerticalStackLayout.GestureRecognizers>
+                                                    <TapGestureRecognizer NumberOfTapsRequired="2" Tapped="OnDoubleTapped"/>
+                                                    <DropGestureRecognizer AllowDrop="True" Drop="OnCellAdded" />
+                                                    <DragGestureRecognizer CanDrag="True"  DragStarting="OnCellRemoved"  />
+                                                </VerticalStackLayout.GestureRecognizers>
+                                            </VerticalStackLayout>
+                                        </ViewCell>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+
+                            </ListView>
+                            <VerticalStackLayout.GestureRecognizers>
+                                <DropGestureRecognizer AllowDrop="True" Drop="OnCellAddedVSL" />
+                            </VerticalStackLayout.GestureRecognizers>
+
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Stroke="DimGray" StrokeThickness="4" StrokeShape="RoundRectangle 0,0,15,15">
+                        <Button
+                            Text="+" 
+                            TextColor="DimGrey"
+                            FontSize="Large"
+                            CommandParameter="FOCUS"
+                            SemanticProperties.Hint="Add New Task"
+                            BackgroundColor="Transparent"
+                            Clicked="OnCreateNewTask"
+                            HorizontalOptions="Fill" />
+                    </Border>
+
+                </VerticalStackLayout>
+                <VerticalStackLayout Margin="10">
+                    <Border Stroke="AntiqueWhite" StrokeThickness="4" StrokeShape="RoundRectangle 15,15,0,0">
+                        <VerticalStackLayout BindingContext="{Binding Source={x:Reference DOING}}">
+                            <Label
+                   Text="DOING"
+                   Style="{StaticResource Headline}"
+                   SemanticProperties.HeadingLevel="Level2" />
+                            <ListView x:Name="DOING" Margin="5" WidthRequest="300" >
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <ViewCell >
+                                            <VerticalStackLayout Margin="5">
+                                                <Label x:Name="CurrentCell" Text="{Binding Name}" FontAttributes="Bold" TextColor="Plum"></Label>
+                                                <Label Text="{Binding Description}" LineBreakMode="WordWrap" FontAttributes="Italic"></Label>
+                                                <Grid  ColumnSpacing="50">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="125" />
+                                                        <ColumnDefinition Width="100" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Label Grid.Column="0" HorizontalOptions="Start" Text="{Binding Task_Type}"></Label>
+                                                    <Label Grid.Column="1" HorizontalOptions="End" Text="{Binding Priority}"></Label>
+                                                </Grid>
+                                                <Label x:Name="CompletionLabel" Text="{Binding Source={x:Reference CompletionSlider},Path=Value, StringFormat='{0:P}'}"></Label>
+                                                <Slider  x:Name="CompletionSlider" Minimum="0" Maximum="1" Value="{Binding Completion}" ValueChanged="OnSliderValueChanged" DragCompleted="OnSliderDragCompleted"/>
+                                                <Grid  ColumnSpacing="25">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="30" />
+                                                        <ColumnDefinition Width="30" />
+                                                        <ColumnDefinition Width="180" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Button
+                                                        Grid.Column="0"
+                                                        Text="&lt;" 
+                                                        TextColor="DimGrey"
+                                                        FontSize="Small"
+                                                        SemanticProperties.Hint="Switch To Left"
+                                                        BackgroundColor="Transparent"
+                                                        Clicked="OnBackClicked"
+                                                        HorizontalOptions="Start" />
+                                                    <Button
+                                                        Grid.Column="1"
+                                                        Text="&gt;"
+                                                        TextColor="DimGrey"
+                                                        FontSize="Small"
+                                                        SemanticProperties.Hint="Switch To Left"
+                                                        BackgroundColor="Transparent"
+                                                        Clicked="OnNextClicked"
+                                                        HorizontalOptions="Start" />
+                                                    <Button
+                                                        Grid.Column="2"
+                                                        HorizontalOptions="End"
+                                                        Text="X"
+                                                        Clicked="OnDelete"
+                                                        VerticalOptions="Center"
+                                                        TextColor="DimGrey"
+                                                        BackgroundColor="Transparent"
+                                                        />
+                                                </Grid>
+                                                <VerticalStackLayout.GestureRecognizers>
+                                                    <TapGestureRecognizer NumberOfTapsRequired="2" Tapped="OnDoubleTapped"/>
+                                                    <DropGestureRecognizer AllowDrop="True" Drop="OnCellAdded" />
+                                                    <DragGestureRecognizer CanDrag="True"  DragStarting="OnCellRemoved"  />
+                                                </VerticalStackLayout.GestureRecognizers>
+                                            </VerticalStackLayout>
+                                        </ViewCell>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+
+                            </ListView>
+                            <VerticalStackLayout.GestureRecognizers>
+                                <DropGestureRecognizer AllowDrop="True" Drop="OnCellAddedVSL" />
+                            </VerticalStackLayout.GestureRecognizers>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Stroke="DimGray" StrokeThickness="4" StrokeShape="RoundRectangle 0,0,15,15">
+                        <Button
+                            Text="+" 
+                            TextColor="DimGrey"
+                            FontSize="Large"
+                            CommandParameter="DOING"
+                            SemanticProperties.Hint="Add New Task"
+                            BackgroundColor="Transparent"
+                            Clicked="OnCreateNewTask"
+                            HorizontalOptions="Fill" />
+                    </Border>
+
+                </VerticalStackLayout>
+                <VerticalStackLayout Margin="10" >
+                    <Border Stroke="AntiqueWhite" StrokeThickness="4" StrokeShape="RoundRectangle 15,15,0,0">
+
+                        <VerticalStackLayout BindingContext="{Binding Source={x:Reference DONE}}">
+                            <Label
+                                Text="COMPLETED"
+                                Style="{StaticResource Headline}"
+                                SemanticProperties.HeadingLevel="Level2" />
+                            <ListView x:Name="DONE" Margin="5" WidthRequest="300">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <ViewCell>
+                                            <Border>
+                                                <VerticalStackLayout Margin="5">
+                                                    <Label x:Name="CurrentCell" Text="{Binding Name}" FontAttributes="Bold" TextColor="Plum"></Label>
+                                                    <Label Text="{Binding Description}" LineBreakMode="WordWrap" FontAttributes="Italic"></Label>
+                                                    <Grid  ColumnSpacing="50">
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto" />
+                                                            <RowDefinition Height="Auto" />
+                                                        </Grid.RowDefinitions>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="125" />
+                                                            <ColumnDefinition Width="100" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <Label Grid.Column="0" HorizontalOptions="Start" Text="{Binding Task_Type}"></Label>
+                                                        <Label Grid.Column="1" HorizontalOptions="End" Text="{Binding Priority}"></Label>
+                                                    </Grid>
+                                                    <Label x:Name="CompletionLabel" Text="{Binding Source={x:Reference CompletionSlider},Path=Value, StringFormat='{0:P}'}"></Label>
+                                                    <Slider  x:Name="CompletionSlider" Minimum="0" Maximum="1" Value="{Binding Completion}" ValueChanged="OnSliderValueChanged" DragCompleted="OnSliderDragCompleted"/>
+                                                    <Grid  ColumnSpacing="25">
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto" />
+                                                            <RowDefinition Height="Auto" />
+                                                            <RowDefinition Height="Auto" />
+                                                        </Grid.RowDefinitions>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="30" />
+                                                            <ColumnDefinition Width="30" />
+                                                            <ColumnDefinition Width="180" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <Button
+                                                        Grid.Column="0"
+                                                        Text="&lt;" 
+                                                        TextColor="DimGrey"
+                                                        FontSize="Small"
+                                                        SemanticProperties.Hint="Switch To Left"
+                                                        BackgroundColor="Transparent"
+                                                        Clicked="OnBackClicked"
+                                                        HorizontalOptions="Start" />
+                                                        <Button
+                                                        Grid.Column="1"
+                                                        Text="&gt;"
+                                                        TextColor="DimGrey"
+                                                        FontSize="Small"
+                                                        SemanticProperties.Hint="Switch To Left"
+                                                        BackgroundColor="Transparent"
+                                                        Clicked="OnNextClicked"
+                                                        HorizontalOptions="Start" />
+                                                        <Button
+                                                        Grid.Column="2"
+                                                        HorizontalOptions="End"
+                                                        Text="X"
+                                                        Clicked="OnDelete"
+                                                        VerticalOptions="Center"
+                                                        TextColor="DimGrey"
+                                                        BackgroundColor="Transparent"
+                                                        />
+                                                    </Grid>
+                                                    <VerticalStackLayout.GestureRecognizers>
+                                                        <TapGestureRecognizer NumberOfTapsRequired="2" Tapped="OnDoubleTapped"/>
+                                                        <DragGestureRecognizer CanDrag="True"  DragStarting="OnCellRemoved" />
+                                                        <DropGestureRecognizer AllowDrop="True" Drop="OnCellAdded" />
+                                                    </VerticalStackLayout.GestureRecognizers>
+                                                </VerticalStackLayout>
+                                            </Border>
+                                        </ViewCell>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+
+
+                            </ListView>
+                            <VerticalStackLayout.GestureRecognizers>
+                                <DropGestureRecognizer AllowDrop="True" Drop="OnCellAddedVSL" />
+                            </VerticalStackLayout.GestureRecognizers>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Stroke="DimGray" StrokeThickness="4" StrokeShape="RoundRectangle 0,0,15,15">
+                        <Button
+                            Text="+" 
+                            TextColor="DimGrey"
+                            FontSize="Large"
+                            SemanticProperties.Hint="Add New Task"
+                            CommandParameter="DONE"
+                            Clicked="OnCreateNewTask"
+                            BackgroundColor="Transparent"
+                            HorizontalOptions="Fill"
+                            />
+                    </Border>
+
+                </VerticalStackLayout>
+
+ 
+                
+            </HorizontalStackLayout>
+
+
+
+            <Label x:Name="helloLabel" Text="TEXT"/>
+
+
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiApp2.Views.NewTaskForm">
+	<VerticalStackLayout>
+		<ScrollView>
+            <VerticalStackLayout>
+                <Label Text="Create New Task" Style="{StaticResource SubHeadline}" SemanticProperties.HeadingLevel="Level2" Margin="0,10,0,0"></Label>
+                <BoxView Color="DimGray" HeightRequest="2" HorizontalOptions="Fill" Margin="0,10,0,10"></BoxView>
+                
+
+                <VerticalStackLayout Padding="30, 0" Spacing="25">
+                    <HorizontalStackLayout WidthRequest="400" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Label Text="Task Type" WidthRequest="100"></Label>
+                        <Picker x:Name="TaskTypePicker" WidthRequest="300">
+                            <Picker.ItemsSource>
+                                <x:Array Type="{x:Type x:String}">
+                                    <x:String>BUG</x:String>
+                                    <x:String>TEST_CYCLE</x:String>
+                                    <x:String>TEST_SPEC</x:String>
+                                    <x:String>TASK</x:String>
+                                    <x:String>TEST_FRAMEWORK</x:String>
+                                    <x:String>TEST_SCRIPT</x:String>
+                                    <x:String>TD</x:String>
+                                </x:Array>
+                            </Picker.ItemsSource>
+                        </Picker>
+                        <!--<Entry Placeholder="task type placeholder" WidthRequest="300"></Entry>-->
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout WidthRequest="400" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Label Text="Priority" WidthRequest="100"></Label>
+                        <Picker x:Name="PriorityPicker" WidthRequest="300">
+                            <Picker.ItemsSource>
+                                <x:Array Type="{x:Type x:String}">
+                                    <x:String>LOW</x:String>
+                                    <x:String>MEDIUM</x:String>
+                                    <x:String>HIGH</x:String>
+                                    <x:String>HIGHEST</x:String>
+                                </x:Array>
+                            </Picker.ItemsSource>
+                        </Picker>
+                        <!--<Entry Placeholder="task type placeholder" WidthRequest="300"></Entry>-->
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout WidthRequest="400" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Label Text="Summary" WidthRequest="100"></Label>
+                        <Entry x:Name="NameEntry" Text="{Binding task.Name, Mode=TwoWay}" TextColor="Plum" Placeholder="task name" WidthRequest="300">
+                        </Entry>
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout WidthRequest="400" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Label Text="Description" WidthRequest="100"></Label>
+                        <Editor x:Name="DescriptionEntry"  Text="{Binding task.Description}" MinimumHeightRequest="200" WidthRequest="300" Placeholder=" that can be long" ></Editor>
+                    </HorizontalStackLayout>
+                    <HorizontalStackLayout WidthRequest="400" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Label Text="Task Status" WidthRequest="100" ></Label>
+                        <Picker x:Name="TaskStatusPicker" WidthRequest="300" >
+                            <Picker.ItemsSource>
+                                <x:Array Type="{x:Type x:String}">
+                                    <x:String>BACKLOG</x:String>
+                                    <x:String>FOCUS</x:String>
+                                    <x:String>DOING</x:String>
+                                    <x:String>DONE</x:String>
+                                </x:Array>
+                            </Picker.ItemsSource>
+                        </Picker>
+                    </HorizontalStackLayout>
+                    
+                </VerticalStackLayout>
+
+
+
+
+            </VerticalStackLayout>
+
+		</ScrollView>
+        <VerticalStackLayout Margin="0,20,0,20" Padding="50, 0" Spacing="25"  VerticalOptions="End">
+            <HorizontalStackLayout Spacing="25" HorizontalOptions="End" VerticalOptions="End">
+                <Button Text="Save" Clicked="OnSave" BackgroundColor="Plum"></Button>
+                <Button Text="Cancel" Clicked="OnCancel" BorderWidth="1" BorderColor="Plum" BackgroundColor="Transparent" TextColor="AntiqueWhite"></Button>
+            </HorizontalStackLayout>
+		</VerticalStackLayout>
+	</VerticalStackLayout>
+
+    
+</ContentPage>
